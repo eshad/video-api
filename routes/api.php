@@ -22,3 +22,4 @@ Route::get('videos', [VideoController::class, 'index']);
 Route::post('videos', [VideoController::class, 'upload']);
 Route::delete('videos', [VideoController::class, 'destroy']);
 Route::get('videos/{id}/class', [VideoController::class, 'updateClass']);
+Route::post('/videos/thumbnail', [VideoController::class, 'updateThumbnail']);

@@ -86,4 +86,40 @@ class VideoController extends Controller
 
         return response()->json(['message' => 'Video not found'], 404);
     }
+    public function extractLastNumber($url) {
+    // Use a regular expression to match the last number in the URL
+        if (preg_match('/(\d+)(?=\.\w+$)/', $url, $matches)) {
+             return $matches[1];
+        }
+        return null; // Return null if no number is found
+    }
+    public function updateThumbnail(Request $request)
+    {
+        //$thumbName = $this->extractLastNumber($request->thumb).".jpg";
+        // Extract last number and form the new thumbnail name
+        $thumbName = $this->extractLastNumber($request->thumb) . ".jpg";
+
+        $request->validate([
+                'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10240', // 10MB limit
+        ]);
+
+        if ($request->hasFile('thumbnail')) {
+            // Define the S3 path with the extracted thumbName
+            $path = '/image/' . $thumbName;
+
+            // Check if the file already exists in S3
+            if (Storage::disk('s3')->exists($path)) {
+                // Delete the existing file
+                //return $path;
+               Storage::disk('s3')->delete($path);
+            }
+
+            // Store the new thumbnail on S3
+            Storage::disk('s3')->put($path, file_get_contents($request->file('thumbnail')), 'public');
+
+            return response()->json(['message' => 'Thumbnail updated successfully', 'thumbnail' => $path], 200);
+        }
+
+        return response()->json(['message' => 'No thumbnail uploaded'], 400);
+    }
 }
