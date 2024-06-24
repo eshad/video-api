@@ -13,6 +13,10 @@ class VideoController extends Controller
         $videos = Video::paginate(10);
         return response()->json($videos);
     }
+    public function allVideos() {
+        $videos = Video::all(); // Replace with your actual method to fetch all videos
+        return response()->json($videos);
+    }
 
     public function upload(Request $request)
     {

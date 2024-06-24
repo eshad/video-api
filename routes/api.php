@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('videos', [VideoController::class, 'index']);
+Route::get('allvideos', [VideoController::class, 'allVideos']);
 Route::post('videos', [VideoController::class, 'upload']);
 Route::delete('videos', [VideoController::class, 'destroy']);
 Route::get('videos/{id}/class', [VideoController::class, 'updateClass']);
